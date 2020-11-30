@@ -1,6 +1,8 @@
 from flask import Blueprint, request, url_for, make_response, jsonify
 import json
 from ..model.mariadb import db, Activity, Voice, Url
+from web_service.helper.utils import get_short_code
+from web_service.helper.error import derived_error
 
 bp = Blueprint('public', __name__)
 
@@ -26,16 +28,25 @@ def activity_controller():
 
     db.session.add(activity)
     db.session.flush()
+
+    short_code = get_short_code()
+    short_url = Url(short_code, activity.id)
+
+    db.session.add(short_url)
     db.session.commit()
 
-    response = make_response(jsonify(
-        {
-            'url': request.host_url + '666',
-            'activity_id': activity.id
-        })
-    )
+    body = {
+        'url': request.host_url  + short_code + '?id=' + str(activity.id),
+        'activity_id': activity.id,
+        **derived_error()
+    }
 
+    response = make_response(jsonify(body))
     response.headers['ContentType'] = 'application/json'
     response.status_code = 200
 
     return response
+
+
+
+
