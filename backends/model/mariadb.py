@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from web_service.helper.utils import get_short_code
+from backends.helper.utils import get_short_code
 db = SQLAlchemy()
 
 

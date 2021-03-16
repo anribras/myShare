@@ -1,8 +1,8 @@
 from flask import Blueprint, request, url_for, make_response, jsonify
 import json
 from ..model.mariadb import db, Activity, Voice, Url
-from web_service.helper.utils import get_short_code
-from web_service.helper.error import derived_error
+from backends.helper.utils import get_short_code
+from backends.helper.error import derived_error
 
 bp = Blueprint('public', __name__)
 
@@ -36,7 +36,7 @@ def activity_controller():
     db.session.commit()
 
     body = {
-        'url': request.host_url  + short_code + '?id=' + str(activity.id),
+        'url': request.host_url  + short_code,
         'activity_id': activity.id,
         **derived_error()
     }

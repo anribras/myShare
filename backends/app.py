@@ -1,10 +1,11 @@
 from flask import Flask
-from config import Development
+from backends.config import Development
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from web_service.blueprints.public_api import bp as public_bp
-from web_service.blueprints.page import bp as page_bp
-from web_service.model.mariadb import db
+from backends.blueprints.public_api import bp as public_bp
+from backends.blueprints.page import bp as page_bp
+from backends.model.mariadb import db
+from flask_cors import CORS
 
 
 app = Flask(__name__)
@@ -18,3 +19,8 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
+
+CORS(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -3,5 +3,6 @@ class Base(object):
 
 
 class Development(Base):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///./app.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    FLASK_DEBUG = True
