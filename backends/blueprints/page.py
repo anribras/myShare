@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template
-from ..model.mariadb import db, Activity, Voice, Url
 import os
 
 root_path = os.path.abspath('.')

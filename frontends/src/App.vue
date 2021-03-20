@@ -83,6 +83,7 @@ export default {
           // 创建LatLngBounds实例
           var latlngBounds = new TMap.LatLngBounds()
           // 将坐标逐一做为参数传入extend方法，latlngBounds会根据传入坐标自动扩展生成
+          console.log(pl.length)
           for (var i = 0; i < pl.length; i++) {
             latlngBounds.extend(pl[i])
           }
