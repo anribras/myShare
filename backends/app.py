@@ -2,8 +2,8 @@ from flask import Flask
 from backends.config import Development
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from backends.blueprints.public import bp as public_bp
-from backends.blueprints.page import bp as page_bp
+from backends.blueprints.api.public import bp as public_bp
+from backends.blueprints.web.page import bp as page_bp
 from backends.model import db,ma
 from flask_cors import CORS
 

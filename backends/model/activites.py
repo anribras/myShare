@@ -17,17 +17,10 @@ class Activity(TimeStampMixin, db.Model):
     current_poi = db.Column(Geometry(geometry_type='POINT'))
     line_poi = db.Column(Geometry(geometry_type='LINESTRING'))
 
-    def __init__(self, u, t, n, to_u, dest, lt, sp, ep, cp, lp):
-        self.user = u
-        self.atype = t
-        self.name = n
-        self.to_user = to_u
-        self.destination = dest
-        self.left_time = lt
-        self.start_poi = sp
-        self.end_poi = ep
-        self.current_poi = cp
-        self.line_poi = lp
+    # def __init__(self, u, t, n, to_u, dest, lt, sp, ep, cp, lp):
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def __repr__(self):
         return 'Activity'

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 import os
 
-root_path = os.path.abspath('.')
+root_path = os.path.abspath('..')
 bp = Blueprint('page', __name__,
                template_folder=root_path + '/frontends/dist',
                # set js/css static filepath
