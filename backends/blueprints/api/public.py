@@ -31,7 +31,7 @@ def index():
 class ActivityView(Resource):
     def get(self, id):
         act = db.session.query(Activity).filter_by(id=id).first()
-        act_schema = ActivitySchema()
+        act_schema = ActivitySchema(exclude=('atype', 'to_user'))
         result = act_schema.dump(act)
         resp = make_response(jsonify(
             **result,
@@ -40,17 +40,57 @@ class ActivityView(Resource):
         resp.content_type = 'application/json'
         return resp
 
-    def put(self):
-        pass
+    def put(self, id):
+        # Use context to tell Schema do something special.
+        act_schema = ActivitySchema(only=(
+            'destination', 'start_poi', 'end_poi', 'current_poi', 'line_poi',
+            'left_time', 'update_time'
+        ), context='update')
+
+        try:
+            act_json = act_schema.load(request.json)
+            db.session.query(Activity).filter_by(id=id).update(
+                act_json
+            )
+            db.session.commit()
+        except Exception as e:
+            if hasattr(e, 'messages'):
+                body = {
+                    **derived_error(E.input_error, extra=str(e.messages))
+                }
+            else:
+                body = {
+                    **derived_error(E.input_error, extra=str(e))
+                }
+            response = make_response(jsonify(body))
+            response.headers['ContentType'] = 'application/json'
+            response.status_code = 200
+            return response
+        response = make_response(jsonify(derived_error(E.ok)))
+        response.headers['ContentType'] = 'application/json'
+        response.status_code = 200
+        return response
 
 
 @api.resource('/activities')
 class ActivitiesView(Resource):
     def post(self):
-        act_schema = ActivitySchema()
-        activity = act_schema.load(request.json)
-        db.session.add(activity)
-        db.session.flush()
+        act_schema = ActivitySchema(only=(
+            'user', 'destination', 'start_poi', 'end_poi', 'current_poi', 'line_poi',
+            'left_time', 'atype', 'to_user'
+        ))
+        try:
+            activity = act_schema.load(request.json)
+            db.session.add(activity)
+            db.session.flush()
+        except Exception as e:
+            body = {
+                **derived_error(E.input_error, extra=str(e.messages))
+            }
+            response = make_response(jsonify(body))
+            response.headers['ContentType'] = 'application/json'
+            response.status_code = 200
+            return response
 
         short_code = get_short_code()
         short_url = Url(short_code, activity.id)
